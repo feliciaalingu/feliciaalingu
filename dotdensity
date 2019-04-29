@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>ArcGIS JavaScript Tutorials: Create a JavaScript starter app</title>
+    <style>
+      html, body, #viewDiv {
+        padding: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+    </style>
+    
+    <link rel="stylesheet" href="https://js.arcgis.com/4.11/esri/themes/light/main.css">
+<script src="https://js.arcgis.com/4.11/"></script>
+    
+    <script>
+  require([
+      "esri/Map",
+      "esri/views/MapView",
+      "esri/layers/FeatureLayer",
+    "esri/renderers/DotDensityRenderer"
+], function(Map, MapView, FeatureLayer,DotDensityRenderer) {
+    
+    var map = new Map({
+      basemap: "topo-vector"
+    });
+    
+    var fallcomplaints = new FeatureLayer({
+      url:"https://services.arcgis.com/HYLRafMc4Ux6DA8c/arcgis/rest/services/2017_Fall_Complaints/FeatureServer"
+    });
+    
+    map.add(fallcomplaints);
+ 
+const dotDensityRenderer = new DotDensityRenderer({
+  referenceDotValue: 1,
+  outline: null,  // avoid the default outline
+  referenceScale: 1000000,
+  legendOptions: {
+    // legend displays 1 dot = 4800 people
+    unit: "falls"
+  },
+  attributes: [{
+    field: "Point_Count", // field name for population
+    color: "#ff0000",
+    label: "fall complaints"  // label in legend
+  }]
+});
+
+// apply renderer to the layer
+fallcomplaints.renderer = dotDensityRenderer;
+
+    
+    var view = new MapView({
+      container: "viewDiv",
+      map: map,
+      center: [-84.574878,33.925852],
+      zoom: 10
+    });
+  });
+</script>
+    
+  </head>
+  <body>
+    <div id="viewDiv"></div>
+  </body>
+</html>
